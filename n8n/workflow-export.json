@@ -1,0 +1,609 @@
+﻿{
+    "settings":  {
+                     "executionOrder":  "v1",
+                     "binaryMode":  "separate"
+                 },
+    "name":  "Lead Copilot - Intake Pipeline",
+    "connections":  {
+                        "Lead Intake":  {
+                                            "main":  [
+                                                         [
+                                                             {
+                                                                 "node":  "Normalize",
+                                                                 "type":  "main",
+                                                                 "index":  0
+                                                             }
+                                                         ]
+                                                     ]
+                                        },
+                        "Normalize":  {
+                                          "main":  [
+                                                       [
+                                                           {
+                                                               "node":  "Load Prompts",
+                                                               "type":  "main",
+                                                               "index":  0
+                                                           }
+                                                       ]
+                                                   ]
+                                      },
+                        "Load Prompts":  {
+                                             "main":  [
+                                                          [
+                                                              {
+                                                                  "node":  "Guardrail",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ]
+                                                      ]
+                                         },
+                        "Guardrail":  {
+                                          "main":  [
+                                                       [
+                                                           {
+                                                               "node":  "Agent A - Extractor",
+                                                               "type":  "main",
+                                                               "index":  0
+                                                           }
+                                                       ]
+                                                   ]
+                                      },
+                        "Agent A - Extractor":  {
+                                                    "main":  [
+                                                                 [
+                                                                     {
+                                                                         "node":  "Parse Extractor",
+                                                                         "type":  "main",
+                                                                         "index":  0
+                                                                     }
+                                                                 ]
+                                                             ]
+                                                },
+                        "Parse Extractor":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Agent B - Qualifier",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "Agent B - Qualifier":  {
+                                                    "main":  [
+                                                                 [
+                                                                     {
+                                                                         "node":  "Parse Qualifier",
+                                                                         "type":  "main",
+                                                                         "index":  0
+                                                                     }
+                                                                 ]
+                                                             ]
+                                                },
+                        "Parse Qualifier":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "RAG Query",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "RAG Query":  {
+                                          "main":  [
+                                                       [
+                                                           {
+                                                               "node":  "Format RAG Context",
+                                                               "type":  "main",
+                                                               "index":  0
+                                                           }
+                                                       ]
+                                                   ]
+                                      },
+                        "Format RAG Context":  {
+                                                   "main":  [
+                                                                [
+                                                                    {
+                                                                        "node":  "Agent C - Responder",
+                                                                        "type":  "main",
+                                                                        "index":  0
+                                                                    }
+                                                                ]
+                                                            ]
+                                               },
+                        "Agent C - Responder":  {
+                                                    "main":  [
+                                                                 [
+                                                                     {
+                                                                         "node":  "Parse Responder",
+                                                                         "type":  "main",
+                                                                         "index":  0
+                                                                     }
+                                                                 ]
+                                                             ]
+                                                },
+                        "Parse Responder":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Agent D - QA Reviewer",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "Agent D - QA Reviewer":  {
+                                                      "main":  [
+                                                                   [
+                                                                       {
+                                                                           "node":  "Parse QA and Resolve",
+                                                                           "type":  "main",
+                                                                           "index":  0
+                                                                       }
+                                                                   ]
+                                                               ]
+                                                  },
+                        "Parse QA and Resolve":  {
+                                                     "main":  [
+                                                                  [
+                                                                      {
+                                                                          "node":  "Airtable Create Record",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ]
+                                                              ]
+                                                 },
+                        "Airtable Create Record":  {
+                                                       "main":  [
+                                                                    [
+                                                                        {
+                                                                            "node":  "Route by Ping Needed",
+                                                                            "type":  "main",
+                                                                            "index":  0
+                                                                        }
+                                                                    ]
+                                                                ]
+                                                   },
+                        "Route by Ping Needed":  {
+                                                     "main":  [
+                                                                  [
+                                                                      {
+                                                                          "node":  "Telegram Approve Ping",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ],
+                                                                  [
+
+                                                                  ]
+                                                              ]
+                                                 }
+                    },
+    "nodes":  [
+                  {
+                      "id":  "223966a7-ce7b-4d23-840b-f337c5cabbb3",
+                      "name":  "Lead Intake",
+                      "webhookId":  "f7d54c56-4275-43a0-a552-a5603524fb39",
+                      "type":  "n8n-nodes-base.webhook",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       0,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "path":  "lead-intake",
+                                         "options":  {
+
+                                                     },
+                                         "httpMethod":  "POST"
+                                     }
+                  },
+                  {
+                      "id":  "10000000-0000-0000-0000-000000000001",
+                      "name":  "Normalize",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       220,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const b = ($input.first().json.body) ? $input.first().json.body : $input.first().json;\nconst now = new Date().toISOString();\nreturn [{\n  json: {\n    lead_id: \"lead_\" + Date.now() + \"_\" + Math.random().toString(36).slice(2, 8),\n    source: \"Form\",\n    contact_name_raw: b.name || null,\n    email_raw: b.email || null,\n    phone_raw: b.phone || null,\n    company_name_raw: b.company || null,\n    message: b.message || \"\",\n    received_at: now\n  }\n}];",
+                                         "mode":  "runOnceForAllItems"
+                                     }
+                  },
+                  {
+                      "id":  "10000000-0000-0000-0000-000000000002",
+                      "name":  "Load Prompts",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       440,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const fs = require(\"fs\");\nconst dir = \"/data/prompts\";\nconst read = (name) =\u003e fs.readFileSync(dir + \"/\" + name, \"utf8\");\nconst prompts = {\n  extractor: read(\"extractor.md\"),\n  qualifier: read(\"qualifier_rubric.md\"),\n  responder: read(\"responder.md\"),\n  qa_reviewer: read(\"qa_reviewer.md\")\n};\nreturn $input.all().map(item =\u003e ({ json: Object.assign({}, item.json, { prompts: prompts }) }));",
+                                         "mode":  "runOnceForAllItems"
+                                     }
+                  },
+                  {
+                      "id":  "10000000-0000-0000-0000-000000000003",
+                      "name":  "Guardrail",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       660,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const item = $input.first().json;\nconst raw = item.message || \"\";\n\n// Neutralize delimiter-injection attempts (e.g. fake closing tags trying to break\n// out of the \u003clead_message\u003e wrapper used in agent prompts) before anything reaches an LLM.\nconst neutralized = raw.replace(/\u003c/g, \"\\u2039\").replace(/\u003e/g, \"\\u203a\");\n\n// Mask obvious PII in the copy that goes into LLM prompts - originals are kept\n// separately (contact_name_raw / email_raw / phone_raw) for the Airtable record.\nconst maskedForLlm = neutralized\n  .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g, \"[EMAIL]\")\n  .replace(/\\+?\\d[\\d\\s().-]{7,}\\d/g, \"[PHONE]\");\n\nreturn [{\n  json: Object.assign({}, item, {\n    message_for_llm: maskedForLlm,\n    message_raw: raw\n  })\n}];",
+                                         "mode":  "runOnceForAllItems"
+                                     }
+                  },
+                  {
+                      "id":  "20000000-0000-0000-0000-000000000001",
+                      "name":  "Agent A - Extractor",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "retryOnFail":  true,
+                      "maxTries":  3,
+                      "waitBetweenTries":  3000,
+                      "position":  [
+                                       880,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "specifyBody":  "json",
+                                         "method":  "POST",
+                                         "authentication":  "genericCredentialType",
+                                         "jsonBody":  "={{ JSON.stringify({ systemInstruction: { parts: [{ text: $json.prompts.extractor }] }, contents: [{ parts: [{ text: \"Lead message (source: \" + $json.source + \"):\\n\\n\u003clead_message\u003e\\n\" + $json.message_for_llm + \"\\n\u003c/lead_message\u003e\" }] }], generationConfig: { responseMimeType: \"application/json\", temperature: 0.2 } }) }}",
+                                         "url":  "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent",
+                                         "options":  {
+
+                                                     },
+                                         "sendBody":  true,
+                                         "genericAuthType":  "httpQueryAuth"
+                                     },
+                      "credentials":  {
+                                          "httpQueryAuth":  {
+                                                                "id":  "nzFzEHYR9WRmL67B",
+                                                                "name":  "Lead Copilot Gemini"
+                                                            }
+                                      }
+                  },
+                  {
+                      "id":  "10000000-0000-0000-0000-000000000004",
+                      "name":  "Parse Extractor",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1100,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const prior = $(\"Guardrail\").item.json;\nconst resp = $input.first().json;\nlet extracted;\ntry {\n  const raw = resp.candidates[0].content.parts[0].text;\n  extracted = JSON.parse(raw);\n} catch (e) {\n  throw new Error(\"Extractor agent returned invalid JSON: \" + e.message);\n}\nreturn [{ json: Object.assign({}, prior, { extracted: extracted }) }];",
+                                         "mode":  "runOnceForAllItems"
+                                     }
+                  },
+                  {
+                      "id":  "20000000-0000-0000-0000-000000000002",
+                      "name":  "Agent B - Qualifier",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "retryOnFail":  true,
+                      "maxTries":  3,
+                      "waitBetweenTries":  3000,
+                      "position":  [
+                                       1320,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "specifyBody":  "json",
+                                         "method":  "POST",
+                                         "authentication":  "genericCredentialType",
+                                         "jsonBody":  "={{ JSON.stringify({ systemInstruction: { parts: [{ text: $json.prompts.qualifier }] }, contents: [{ parts: [{ text: \"Extracted lead JSON:\\n\" + JSON.stringify($json.extracted, null, 2) }] }], generationConfig: { responseMimeType: \"application/json\", temperature: 0.2 } }) }}",
+                                         "url":  "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent",
+                                         "options":  {
+
+                                                     },
+                                         "sendBody":  true,
+                                         "genericAuthType":  "httpQueryAuth"
+                                     },
+                      "credentials":  {
+                                          "httpQueryAuth":  {
+                                                                "id":  "nzFzEHYR9WRmL67B",
+                                                                "name":  "Lead Copilot Gemini"
+                                                            }
+                                      }
+                  },
+                  {
+                      "id":  "10000000-0000-0000-0000-000000000005",
+                      "name":  "Parse Qualifier",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1540,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const prior = $(\"Parse Extractor\").item.json;\nconst resp = $input.first().json;\nlet q;\ntry {\n  const raw = resp.candidates[0].content.parts[0].text;\n  q = JSON.parse(raw);\n} catch (e) {\n  throw new Error(\"Qualifier agent returned invalid JSON: \" + e.message);\n}\nreturn [{ json: Object.assign({}, prior, {\n  score: q.score,\n  temperature: q.temperature,\n  scoring_reasoning: q.reasoning\n}) }];",
+                                         "mode":  "runOnceForAllItems"
+                                     }
+                  },
+                  {
+                      "id":  "20000000-0000-0000-0000-000000000003",
+                      "name":  "RAG Query",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       1760,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "specifyBody":  "json",
+                                         "authentication":  "none",
+                                         "sendBody":  true,
+                                         "method":  "POST",
+                                         "options":  {
+
+                                                     },
+                                         "jsonBody":  "={{ JSON.stringify({ query: $json.extracted.stated_need || $json.message_raw, k: 4 }) }}",
+                                         "url":  "http://rag-service:8001/query"
+                                     }
+                  },
+                  {
+                      "id":  "10000000-0000-0000-0000-000000000006",
+                      "name":  "Format RAG Context",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1980,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const prior = $(\"Parse Qualifier\").item.json;\nconst resp = $input.first().json;\nconst results = resp.results || [];\nconst context = results.map(r =\u003e \"[\" + r.source + \" / \" + r.heading + \"]\\n\" + r.text).join(\"\\n\\n\");\nconst sources = [...new Set(results.map(r =\u003e r.source))];\nreturn [{ json: Object.assign({}, prior, { rag_context: context, rag_sources: sources }) }];",
+                                         "mode":  "runOnceForAllItems"
+                                     }
+                  },
+                  {
+                      "id":  "20000000-0000-0000-0000-000000000004",
+                      "name":  "Agent C - Responder",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "retryOnFail":  true,
+                      "maxTries":  3,
+                      "waitBetweenTries":  3000,
+                      "position":  [
+                                       2200,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "specifyBody":  "json",
+                                         "method":  "POST",
+                                         "authentication":  "genericCredentialType",
+                                         "jsonBody":  "={{ JSON.stringify({ systemInstruction: { parts: [{ text: $json.prompts.responder }] }, contents: [{ parts: [{ text: \"Extracted lead JSON:\\n\" + JSON.stringify($json.extracted, null, 2) + \"\\n\\nQualifier output:\\n\" + JSON.stringify({score:$json.score,temperature:$json.temperature,reasoning:$json.scoring_reasoning}, null, 2) + \"\\n\\nRetrieved context:\\n\" + $json.rag_context }] }], generationConfig: { responseMimeType: \"application/json\", temperature: 0.2 } }) }}",
+                                         "url":  "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent",
+                                         "options":  {
+
+                                                     },
+                                         "sendBody":  true,
+                                         "genericAuthType":  "httpQueryAuth"
+                                     },
+                      "credentials":  {
+                                          "httpQueryAuth":  {
+                                                                "id":  "nzFzEHYR9WRmL67B",
+                                                                "name":  "Lead Copilot Gemini"
+                                                            }
+                                      }
+                  },
+                  {
+                      "id":  "10000000-0000-0000-0000-000000000007",
+                      "name":  "Parse Responder",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       2420,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const prior = $(\"Format RAG Context\").item.json;\nconst resp = $input.first().json;\nlet d;\ntry {\n  const raw = resp.candidates[0].content.parts[0].text;\n  d = JSON.parse(raw);\n} catch (e) {\n  throw new Error(\"Responder agent returned invalid JSON: \" + e.message);\n}\nreturn [{ json: Object.assign({}, prior, {\n  draft_v1: d.draft,\n  draft_sources_used: d.sources_used || []\n}) }];",
+                                         "mode":  "runOnceForAllItems"
+                                     }
+                  },
+                  {
+                      "id":  "20000000-0000-0000-0000-000000000005",
+                      "name":  "Agent D - QA Reviewer",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "retryOnFail":  true,
+                      "maxTries":  3,
+                      "waitBetweenTries":  3000,
+                      "position":  [
+                                       2640,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "specifyBody":  "json",
+                                         "method":  "POST",
+                                         "authentication":  "genericCredentialType",
+                                         "jsonBody":  "={{ JSON.stringify({ systemInstruction: { parts: [{ text: $json.prompts.qa_reviewer }] }, contents: [{ parts: [{ text: \"Draft to review:\\n\" + $json.draft_v1 + \"\\n\\nContext it was grounded in:\\n\" + $json.rag_context + \"\\n\\nExtracted lead JSON:\\n\" + JSON.stringify($json.extracted, null, 2) }] }], generationConfig: { responseMimeType: \"application/json\", temperature: 0.2 } }) }}",
+                                         "url":  "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent",
+                                         "options":  {
+
+                                                     },
+                                         "sendBody":  true,
+                                         "genericAuthType":  "httpQueryAuth"
+                                     },
+                      "credentials":  {
+                                          "httpQueryAuth":  {
+                                                                "id":  "nzFzEHYR9WRmL67B",
+                                                                "name":  "Lead Copilot Gemini"
+                                                            }
+                                      }
+                  },
+                  {
+                      "id":  "10000000-0000-0000-0000-000000000008",
+                      "name":  "Parse QA and Resolve",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       2860,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "const prior = $(\"Parse Responder\").item.json;\nconst resp = $input.first().json;\nlet qa;\ntry {\n  const raw = resp.candidates[0].content.parts[0].text;\n  qa = JSON.parse(raw);\n} catch (e) {\n  throw new Error(\"QA reviewer agent returned invalid JSON: \" + e.message);\n}\n\nconst verdict = qa.verdict; // \"Pass\" | \"Fixed\" | \"Failed\"\nconst finalDraft = verdict === \"Failed\" ? null : (verdict === \"Fixed\" ? qa.corrected_draft : prior.draft_v1);\nconst needsPing = verdict === \"Failed\" || prior.temperature === \"Hot\";\nconst pingReason = verdict === \"Failed\" ? \"qa_failed\" : (prior.temperature === \"Hot\" ? \"hot_lead\" : \"none\");\n\nconst fire = \"\\u{1F525}\";\nconst warn = \"\\u26A0\\uFE0F\";\nconst header = pingReason === \"qa_failed\"\n  ? (warn + \" Needs manual review (auto-processing flagged this one)\")\n  : (fire + \" Hot lead\");\nconst telegramText = header + \"\\n\\n\"\n  + \"Score: \" + prior.score + \"/100\\n\"\n  + \"Reasoning: \" + prior.scoring_reasoning + \"\\n\\n\"\n  + \"Draft reply:\\n\" + (finalDraft || \"(none - see QA notes)\") + \"\\n\\n\"\n  + \"QA notes: \" + qa.notes;\n\nreturn [{ json: Object.assign({}, prior, {\n  qa_verdict: verdict,\n  qa_notes: qa.notes,\n  final_draft: finalDraft,\n  needs_telegram_ping: needsPing,\n  ping_reason: pingReason,\n  telegram_text: telegramText,\n  processing_failed: false,\n  processed_at: new Date().toISOString()\n}) }];",
+                                         "mode":  "runOnceForAllItems"
+                                     }
+                  },
+                  {
+                      "id":  "30000000-0000-0000-0000-000000000001",
+                      "name":  "Airtable Create Record",
+                      "type":  "n8n-nodes-base.airtable",
+                      "typeVersion":  2.1,
+                      "position":  [
+                                       3080,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "operation":  "create",
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "matchingColumns":  [
+
+                                                                             ],
+                                                         "schema":  [
+
+                                                                    ],
+                                                         "value":  {
+                                                                       "Lead ID":  "={{$json.lead_id}}",
+                                                                       "Draft v1":  "={{$json.draft_v1}}",
+                                                                       "Received At":  "={{$json.received_at}}",
+                                                                       "Processed At":  "={{$json.processed_at}}",
+                                                                       "QA Verdict":  "={{$json.qa_verdict}}",
+                                                                       "Processing Failed":  "={{$json.processing_failed}}",
+                                                                       "Extracted JSON":  "={{JSON.stringify($json.extracted)}}",
+                                                                       "Source":  "={{$json.source}}",
+                                                                       "Final Draft":  "={{$json.final_draft}}",
+                                                                       "Human Decision":  "Pending",
+                                                                       "Temperature":  "={{$json.temperature}}",
+                                                                       "Score":  "={{$json.score}}",
+                                                                       "Scoring Reasoning":  "={{$json.scoring_reasoning}}",
+                                                                       "Raw Input":  "={{$json.message_raw}}"
+                                                                   }
+                                                     },
+                                         "resource":  "record",
+                                         "table":  {
+                                                       "mode":  "id",
+                                                       "__rl":  true,
+                                                       "value":  "tblp3dl2oBAL3aPEJ"
+                                                   },
+                                         "base":  {
+                                                      "mode":  "id",
+                                                      "__rl":  true,
+                                                      "value":  "applFYTv9nu77gF19"
+                                                  }
+                                     },
+                      "credentials":  {
+                                          "airtableTokenApi":  {
+                                                                   "id":  "wFpt3sgGvcK9OKPS",
+                                                                   "name":  "Lead Copilot Airtable"
+                                                               }
+                                      }
+                  },
+                  {
+                      "id":  "40000000-0000-0000-0000-000000000001",
+                      "name":  "Route by Ping Needed",
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2.2,
+                      "position":  [
+                                       3300,
+                                       0
+                                   ],
+                      "parameters":  {
+                                         "options":  {
+
+                                                     },
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "typeValidation":  "strict",
+                                                                            "leftValue":  "",
+                                                                            "caseSensitive":  true
+                                                                        },
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "operator":  {
+                                                                                                    "operation":  "true",
+                                                                                                    "type":  "boolean"
+                                                                                                },
+                                                                                   "rightValue":  true,
+                                                                                   "id":  "c1",
+                                                                                   "leftValue":  "={{$(\"Parse QA and Resolve\").item.json.needs_telegram_ping}}"
+                                                                               }
+                                                                           ],
+                                                            "combinator":  "and"
+                                                        }
+                                     }
+                  },
+                  {
+                      "id":  "50000000-0000-0000-0000-000000000001",
+                      "name":  "Telegram Approve Ping",
+                      "type":  "n8n-nodes-base.telegram",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       3520,
+                                       -100
+                                   ],
+                      "parameters":  {
+                                         "additionalFields":  {
+                                                                  "appendAttribution":  false
+                                                              },
+                                         "text":  "={{$(\"Parse QA and Resolve\").item.json.telegram_text}}",
+                                         "inlineKeyboard":  {
+                                                                "rows":  [
+                                                                             {
+                                                                                 "row":  {
+                                                                                             "buttons":  [
+                                                                                                             {
+                                                                                                                 "text":  "Approve",
+                                                                                                                 "additionalFields":  {
+                                                                                                                                          "callback_data":  "={{\"approve:\" + $(\"Airtable Create Record\").item.json.id}}"
+                                                                                                                                      }
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "text":  "Edit",
+                                                                                                                 "additionalFields":  {
+                                                                                                                                          "callback_data":  "={{\"edit:\" + $(\"Airtable Create Record\").item.json.id}}"
+                                                                                                                                      }
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "text":  "Reject",
+                                                                                                                 "additionalFields":  {
+                                                                                                                                          "callback_data":  "={{\"reject:\" + $(\"Airtable Create Record\").item.json.id}}"
+                                                                                                                                      }
+                                                                                                             }
+                                                                                                         ]
+                                                                                         }
+                                                                             }
+                                                                         ]
+                                                            },
+                                         "resource":  "message",
+                                         "chatId":  "7492868342",
+                                         "operation":  "sendMessage",
+                                         "replyMarkup":  "inlineKeyboard"
+                                     },
+                      "credentials":  {
+                                          "telegramApi":  {
+                                                              "id":  "7PND2WjJoeHdKxfq",
+                                                              "name":  "Lead Copilot Telegram"
+                                                          }
+                                      },
+                      "webhookId":  "0f8b9cbb-67f1-4c39-9761-d82346ce08f7"
+                  }
+              ]
+}

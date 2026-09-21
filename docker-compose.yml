@@ -1,0 +1,91 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: ${POSTGRES_DB}
+      DB_POSTGRESDB_USER: ${POSTGRES_USER}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      N8N_HOST: ${N8N_PUBLIC_HOST}
+      N8N_PROTOCOL: https
+      N8N_PORT: 5678
+      WEBHOOK_URL: https://${N8N_PUBLIC_HOST}/
+      N8N_EDITOR_BASE_URL: https://${N8N_PUBLIC_HOST}/
+      GENERIC_TIMEZONE: Europe/Kyiv
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER}
+      N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD}
+      # The "Load Prompts" Code node reads prompts/*.md from disk so prompts stay a
+      # single source of truth versioned in the repo instead of copy-pasted into the UI.
+      NODE_FUNCTION_ALLOW_BUILTIN: fs
+    ports:
+      - "127.0.0.1:5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./prompts:/data/prompts:ro
+
+  landing-page:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./landing-page:/usr/share/nginx/html:ro
+
+  rag-service:
+    build: ./rag-service
+    restart: unless-stopped
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    ports:
+      - "127.0.0.1:8001:8001"
+    volumes:
+      - rag_chroma_data:/data/chroma
+      - ./rag-service/docs:/data/docs:ro
+
+  # Tunnel provider status (as of this build session - re-check if any of this changes):
+  #  - Cloudflare Quick Tunnel (trycloudflare.com): IP-blocked on this network at the
+  #    raw TCP level (confirmed via Test-NetConnection - not DNS/SNI, other Cloudflare
+  #    IPs work fine).
+  #  - serveo.net: connects, but its free-tier URLs are under *.serveousercontent.com,
+  #    which does not resolve in DNS at all right now (server-side issue, not a block).
+  #  - localhost.run: works, but after several reconnects in one session it started
+  #    serving an interactive verification banner our headless, non-tty SSH session
+  #    can't get past - likely a time-windowed rate limit rather than a permanent block.
+  # Using localhost.run since it's the one that has actually worked. If it's rate-limited
+  # again, wait a while before reconnecting rather than retrying in a tight loop.
+  tunnel:
+    image: alpine:3.20
+    restart: unless-stopped
+    entrypoint: >
+      sh -c "apk add --no-cache openssh-client >/dev/null 2>&1 &&
+             exec ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ExitOnForwardFailure=yes -R 80:n8n:5678 nokey@localhost.run"
+    depends_on:
+      - n8n
+
+volumes:
+  postgres_data:
+  n8n_data:
+  rag_chroma_data:
