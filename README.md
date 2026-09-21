@@ -197,5 +197,3 @@ so n8n's webhooks are publicly reachable, then prints the resulting URL.
 - Internal Telegram notifications are in Russian (the target team's language); drafts sent to
   leads stay in the lead's own detected language.
 
-Two more portfolio projects (a document-OCR agent, a RAG knowledge-base assistant) are scoped
-separately and not part of this repo.
