@@ -6,7 +6,7 @@ company docs (no hallucinated prices), self-reviews that draft, and pings a huma
 one-tap approve/edit/reject before anything goes out. Every stage is logged to Airtable with an
 auto-computed time-saved metric.
 
-*(Demo GIF goes here — see `docs/screenshots/`.)*
+![Submitting a lead on the landing page](docs/screenshots/lead-submission-demo.gif)
 
 ## The problem
 
@@ -75,6 +75,30 @@ a broken step never means a lost lead.
 
 End-to-end processing time: **8–12 seconds** per lead, fully automated up to the human approval
 step.
+
+## Demo
+
+**Landing page → n8n webhook.** A visitor describes their problem; the form fires and the page
+confirms instantly without waiting on the agent pipeline behind it.
+
+| Before | After |
+|---|---|
+| ![Landing page form](docs/screenshots/landing-page-empty.jpg) | ![Confirmation screen](docs/screenshots/landing-page-thanks.jpg) |
+
+**Airtable — full audit trail.** Every stage the pipeline ran is logged against the lead: the
+qualifier's score/temperature/reasoning, and the grounded draft reply.
+
+| Score & reasoning | Grounded draft |
+|---|---|
+| ![Score and temperature](docs/screenshots/airtable-score-temperature.jpg) | ![Draft reply](docs/screenshots/airtable-draft.jpg) |
+
+**Telegram — human-in-the-loop.** The sales team gets the score, the reasoning, a Russian
+translation of the draft for internal review, and the QA reviewer's notes — with one-tap
+Approve/Edit/Reject buttons before anything reaches the lead.
+
+| Score & draft | Approve / Edit / Reject |
+|---|---|
+| ![Telegram notification](docs/screenshots/telegram-notification.jpg) | ![Telegram buttons](docs/screenshots/telegram-buttons.jpg) |
 
 ## Stack
 
